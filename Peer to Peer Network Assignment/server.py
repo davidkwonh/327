@@ -6,7 +6,7 @@ import socket
 import threading 
 import sys
 import time
-import fileIO
+#import fileIO
 
 BYTE_SIZE = 1024
 HOST = '127.0.0.1'
