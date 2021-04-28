@@ -6,8 +6,11 @@ from client import *
 from server import *
 
 #directpath = os.getcwd() + "\\Test Files"
-directpath = "C:\\Users\\castr\\OneDrive - csulb\\CECS 327\\P2P\\Test Files"
+# hard coded path to test directory 
+directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
+# using a test file for now 
 prevdir = directpath + "/read_file.txt"
+# new file to write to
 newdir = directpath + "/new_file.txt"
 
 class ip:
@@ -21,6 +24,7 @@ def prepfile(dir=prevdir):
     return read_data.encode("utf-8")
 
 def makefile(encrypted_file):
+    print(encrypted_file)
     encrypted_file = encrypted_file.decode("utf-8")
     print("Writing to file")
     with open(newdir, 'w') as file:

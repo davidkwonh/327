@@ -2,6 +2,7 @@ import socket
 import threading
 import sys
 import time
+import P2P
 
 BYTE_SIZE = 1024
 HOST = '127.0.0.1'
@@ -77,7 +78,7 @@ class Client:
         if self.previous_data != data:
             # TODO 
             # Test to see if this works properly
-            fileIO.create_file(data)
+            P2P.makefile(data)
             self.previous_data = data
         
         return data
