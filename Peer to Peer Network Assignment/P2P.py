@@ -1,4 +1,5 @@
 import os
+import sys
 import socket
 import time
 from random import randint
@@ -13,23 +14,36 @@ prevdir = directpath + "/read_file.txt"
 # new file to write to
 newdir = directpath + "/new_file.txt"
 
+
+#hashmap for transactions between servers and clients
+class shittydht:
+    dht = {}
+
 class ip:
     # make ourself the default peer
     address = ['127.0.0.1']
 
+#sending the file in as an encrypted utf-8 hash
+#before sending the hash, the dht is populated with a key of the file name and the value of the encrypted hash
 def prepfile(dir=prevdir):
     read_data = None
     with open(dir, 'r') as file:
         read_data = file.read()
+        shittydht.dht[file].append(read_data.encode("utf-8"))
     return read_data.encode("utf-8")
 
+#this receives the encrypted file, decrypts it, then saves it to specified local directory that is hard coded as a variable
 def makefile(encrypted_file):
-    print(encrypted_file)
     encrypted_file = encrypted_file.decode("utf-8")
     print("Writing to file")
     with open(newdir, 'w') as file:
         file.write(encrypted_file)
     return True
+
+def compare():
+    with open(dir, 'r') as file:
+        read_data = file.read()
+
 
 
 def main():
