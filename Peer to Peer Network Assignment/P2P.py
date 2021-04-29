@@ -5,9 +5,9 @@ from random import randint
 from client import *
 from server import *
 
-#directpath = os.getcwd() + "\\Test Files"
+directpath = os.getcwd() + "\\Test Files"
 # hard coded path to test directory 
-directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
+#directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
 # using a test file for now 
 prevdir = directpath + "/read_file.txt"
 # new file to write to
