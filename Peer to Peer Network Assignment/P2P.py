@@ -19,6 +19,21 @@ newdir = directpath + "/new_file.txt"
 class shittydht:
     dht = {}
 
+    def populateDHT():
+        dictionary = {}
+
+        for filename in os.listdir(directpath):
+            dir = directpath + '/' + filename
+            with open(dir, 'r') as file:
+                read_data = file.read()
+                dictionary[filename] = read_data.encode("utf-8")
+        print(dictionary)
+
+    
+        
+
+
+
 class ip:
     # make ourself the default peer
     address = ['127.0.0.1']
@@ -47,6 +62,9 @@ def compare():
 
 
 def main():
+    shittydht.populateDHT()
+
+    """
     targetfile = prepfile()
     makefile(targetfile)
 
@@ -75,6 +93,7 @@ def main():
 
         except KeyboardInterrupt as e:
             sys.exit(0)
+    """
 
 def test():
     print(socket.gethostname())
