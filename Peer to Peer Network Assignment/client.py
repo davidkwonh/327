@@ -12,7 +12,7 @@ REQUEST_STRING = "req"
 
 class Client:
     # Constructor for client
-    def __init__(self, addr):
+    def __init__(self, addr, fileList):
         # AF_INET is a pair (host, port) where host is hostname in domain and port is port number being used
         # SOCK_STREAM is default type for socket which is pretty much TCP. Keeps connection until terminated. 
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,6 +27,8 @@ class Client:
         self.s.connect((addr, PORT))
 
         self.previous_data = None
+
+        self.fileList = fileList
         
         # Constructor for initial thread where target is send message function for client
         # Daemon: needs to be set to True before start() called to avoid runtime error

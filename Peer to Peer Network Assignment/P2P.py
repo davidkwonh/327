@@ -27,7 +27,7 @@ class shittydht:
             with open(dir, 'r') as file:
                 read_data = file.read()
                 dictionary[filename] = read_data.encode("utf-8")
-        print(dictionary)
+        return dictionary
 
     
         
@@ -62,13 +62,13 @@ def compare():
 
 
 def main():
-    shittydht.populateDHT()
+    # populate initial DHT before deciding if client or server
+    fileList = shittydht.populateDHT()
 
-    """
-    targetfile = prepfile()
-    makefile(targetfile)
+    #targetfile = prepfile()
+    #makefile(targetfile)
+    #msg = prepfile()
 
-    msg = prepfile()
     while True:
         try:
             print("Establishing Connection")
@@ -76,8 +76,9 @@ def main():
             #time.sleep(randint(1, 10))
             time.sleep(1)
             for ipaddy in ip.address:
+                print(ipaddy)
                 try:
-                    client = Client(ipaddy)
+                    client = Client(ipaddy, fileList)
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except:
@@ -85,7 +86,7 @@ def main():
 
                 # become the server
                 try:
-                    server = Server(msg)
+                    server = Server(fileList)
                 except KeyboardInterrupt:
                     sys.exit()
                 except:
@@ -93,7 +94,6 @@ def main():
 
         except KeyboardInterrupt as e:
             sys.exit(0)
-    """
 
 def test():
     print(socket.gethostname())

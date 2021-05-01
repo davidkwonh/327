@@ -18,10 +18,10 @@ class Server:
     """
     constructor for server
     """
-    def __init__(self, file):
+    def __init__(self, fileList):
         try:
             # the file to upload
-            self.file = file
+            self.fileList = fileList
 
             # define a socket
             # (family=AF_INET, type=SOCK_STREAM)
@@ -51,7 +51,11 @@ class Server:
             print("-" * 3 + "Server Running"+ "-" * 3)
             
             self.run()
-        except Exception as e:
+
+            while True: time.sleep(100)
+
+        except KeyboardInterrupt as e:
+            print("INTERRUPT INSIDE OF INIT")
             sys.exit()
 
 
@@ -82,7 +86,8 @@ class Server:
                         # uploading of the file
                         connection.send(self.file)
                         
-        except Exception as e:
+        except (KeyboardInterrupt, SystemExit) as e:
+            print("INTERRUPT: INSIDE OF HANDLER")
             sys.exit()
 
 
@@ -112,7 +117,7 @@ class Server:
     """
     def run(self):
         # constantly listen for connections
-        while True:
+        try:
             # socket.accept() accept a connection. the return value is a pair (conn, address)
             connection, a = self.s.accept()
 
@@ -133,7 +138,9 @@ class Server:
             print("{}, has connected to the server".format(a))
             print("-" * 3)
 
-
+        except (KeyboardInterrupt, SystemExit) as e:
+            print("INTERRUPT: INSIDE OF RUN")
+            sys.exit()
 
     """
     send a list of peers to all the peers that are connected to the server
