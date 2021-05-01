@@ -26,7 +26,7 @@ class shittydht:
             dir = directpath + '/' + filename
             with open(dir, 'r') as file:
                 read_data = file.read()
-                dictionary[filename] = read_data.encode("utf-8")
+                dictionary[filename] = (read_data.encode("utf-8"),os.path.getmtime(dir))
         return dictionary
 
 
@@ -50,11 +50,6 @@ def makefile(encrypted_file):
     with open(newdir, 'w') as file:
         file.write(encrypted_file)
     return True
-
-def compare():
-    with open(dir, 'r') as file:
-        read_data = file.read()
-
 
 
 def main():

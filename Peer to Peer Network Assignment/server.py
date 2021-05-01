@@ -6,7 +6,8 @@ import socket
 import threading 
 import sys
 import time
-#import fileIO
+import client
+import P2P
 
 BYTE_SIZE = 1024
 HOST = '127.0.0.1'
@@ -18,11 +19,9 @@ class Server:
     """
     constructor for server
     """
-    def __init__(self, fileList):
-        try:
-            # the file to upload
-            self.fileList = fileList
 
+    def __init__(self):
+        try:
             # define a socket
             # (family=AF_INET, type=SOCK_STREAM)
             # AF_INET is pair (host, port) where host is hostname in domain and port is port number being used
@@ -56,8 +55,29 @@ class Server:
             print("INTERRUPT INSIDE OF INIT")
             sys.exit()
 
+    """
+    code that compares the client dht to that of the server based off three things by the following priority
+    1.filename = key
+    2.hash value (if the keys are the same but different hash values)  
+    3.most recent timestamp (the more recent file will be the one sent to the other machine)]
+    """
+    def comparedht():
+        clientdht = client.fileList()
+        serverdht = server.fileList()
+        for key,val in serverdht:
+            for key1, val1 in clientdht:
+                if key == key1:
+                    if val == val1
+                        continue
+                    else:
+                        if (os.path.getmtime(P2P.directpath+"/"+key) > os.path.getmtime(P2P.directpath+"/"+key1)
 
 
+
+
+    # a function to return a dht filelist so that we can compare to the server dht
+    def fileList(self):
+        return shittydht.populateDHT()
     """
     Sending info to the clients and closing the connection if the client has left.
     @param connection The connection server is connected to.

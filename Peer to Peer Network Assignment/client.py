@@ -12,7 +12,7 @@ REQUEST_STRING = "req"
 
 class Client:
     # Constructor for client
-    def __init__(self, addr, fileList):
+    def __init__(self, addr):
         try:
             # AF_INET is a pair (host, port) where host is hostname in domain and port is port number being used
             # SOCK_STREAM is default type for socket which is pretty much TCP. Keeps connection until terminated. 
@@ -29,7 +29,6 @@ class Client:
 
             self.previous_data = None
 
-            self.fileList = fileList
 
             # output if the server is running
             print("-" * 3 + "Client Running"+ "-" * 3)
@@ -68,6 +67,10 @@ class Client:
                 self.update_peers(data[1:])
         """
 
+    # a function to return a dht filelist so that we can compare to the server dht
+    def fileList(self):
+        return shittydht.populateDHT()
+
     def run(self):
         print("This will be where interaction with server happens")
 
@@ -77,6 +80,7 @@ class Client:
             print("Sending...")
             # encode message with UTF-8 codec and send 
             self.s.send(REQUEST_STRING.encode('utf-8'))
+            self.s.send(fileList)
 
         except KeyboardInterrupt as e:
             self.send_disconnect_signal()
