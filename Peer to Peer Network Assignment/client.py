@@ -13,23 +13,35 @@ REQUEST_STRING = "req"
 class Client:
     # Constructor for client
     def __init__(self, addr, fileList):
-        # AF_INET is a pair (host, port) where host is hostname in domain and port is port number being used
-        # SOCK_STREAM is default type for socket which is pretty much TCP. Keeps connection until terminated. 
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            # AF_INET is a pair (host, port) where host is hostname in domain and port is port number being used
+            # SOCK_STREAM is default type for socket which is pretty much TCP. Keeps connection until terminated. 
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        # (level, optname, value)
-        # level: SOL_SOCKET meaning manipulate options at the socket API level
-        # optname: SO_REUSEADDR meaning to reuse socket address in case of client closing 
-        # value: integer representing buffer 
-        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # (level, optname, value)
+            # level: SOL_SOCKET meaning manipulate options at the socket API level
+            # optname: SO_REUSEADDR meaning to reuse socket address in case of client closing 
+            # value: integer representing buffer 
+            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        # Connect to remote socket (addr) using specified port number
-        self.s.connect((addr, PORT))
+            # Connect to remote socket (addr) using specified port number
+            self.s.connect((addr, PORT))
 
-        self.previous_data = None
+            self.previous_data = None
 
-        self.fileList = fileList
+            self.fileList = fileList
+
+            # output if the server is running
+            print("-" * 3 + "Client Running"+ "-" * 3)
+
+            self.run()
+
+        except KeyboardInterrupt as e:
+            print("INTERRUPT INSIDE OF INIT")
+            sys.exit()
         
+        """
+        #Unecessary code for now
         # Constructor for initial thread where target is send message function for client
         # Daemon: needs to be set to True before start() called to avoid runtime error
         # Daemon thread will run without blocking main thread
@@ -54,7 +66,10 @@ class Client:
             elif data[0:1] == b'\x11':
                 print("Got peers.")
                 self.update_peers(data[1:])
+        """
 
+    def run(self):
+        print("This will be where interaction with server happens")
 
     def send_message(self):
         #TODO Finish up function

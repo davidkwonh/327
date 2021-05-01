@@ -29,10 +29,6 @@ class shittydht:
                 dictionary[filename] = read_data.encode("utf-8")
         return dictionary
 
-    
-        
-
-
 
 class ip:
     # make ourself the default peer

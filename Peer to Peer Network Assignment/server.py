@@ -52,8 +52,6 @@ class Server:
             
             self.run()
 
-            while True: time.sleep(100)
-
         except KeyboardInterrupt as e:
             print("INTERRUPT INSIDE OF INIT")
             sys.exit()
@@ -137,6 +135,8 @@ class Server:
             print("-" * 3)
             print("{}, has connected to the server".format(a))
             print("-" * 3)
+
+            while True: time.sleep(100)
 
         except (KeyboardInterrupt, SystemExit) as e:
             print("INTERRUPT: INSIDE OF RUN")
