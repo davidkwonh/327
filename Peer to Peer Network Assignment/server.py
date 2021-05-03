@@ -53,7 +53,7 @@ class Server:
             self.s.listen(1)
 
             # output if the server is running
-            print("-" * 3 + "Server Running"+ "-" * 3)
+            print("Server Running")
             
             self.run()
 
