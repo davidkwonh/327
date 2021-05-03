@@ -88,7 +88,7 @@ class Client:
 
     def receive_message(self):
         #TODO NEED TO TEST
-        print("Recieving...")
+        print("Receiving...")
         data = self.s.recv(BYTE_SIZE)
 
         # test to see if we have data

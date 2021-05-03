@@ -62,22 +62,45 @@ class Server:
     3.most recent timestamp (the more recent file will be the one sent to the other machine)]
     """
     def comparedht():
+        # import all files in the client and server nodes
         clientdht = client.fileList()
         serverdht = server.fileList()
-        for key,val in serverdht:
-            for key1, val1 in clientdht:
-                if key == key1:
-                    if val == val1
-                        continue
-                    else:
-                        if (os.path.getmtime(P2P.directpath+"/"+key) > os.path.getmtime(P2P.directpath+"/"+key1)
+        
+        # initiate a temp dictionary to hold file
+        tempDict = {}
 
+        # start comparing files
+        for filename in serverdht:
+            # same name:
+            # keys() returns a list of all the available keys in the clientdht
+            if filename in clientdht.keys():
+                # pass if the files have the same hash value
+                if serverdht[filename] == clientdht[filename]:
+                    tempDict[filename] = serverdht[filename]
+                # compare timestamps:
+                elif serverdht[filename][1] > clientdht[filename][1]:
+                    tempDict[filename] = serverdht[filename]
+                else:
+                    tempDict[filename] = clientdht[filename]
+                # remove the file from the client dht
+                clientdht.pop(filename)
+            # different name:
+            # add the file to the temp dictionary
+            else:
+                tempDict[filename] = serverdht[filename]
 
+        # adding leftover file in client node to the temp dictionary
+        for filename in clientdht:
+            tempDict[filename] = clientdht[filename]
 
+        #return the dht:
+        return tempDict
 
+                
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
         return shittydht.populateDHT()
+
     """
     Sending info to the clients and closing the connection if the client has left.
     @param connection The connection server is connected to.
@@ -108,7 +131,6 @@ class Server:
             print("INTERRUPT: INSIDE OF HANDLER")
             sys.exit()
 
-
     """
     Disconnect a peer.
     @param connection The connection server is connected to.
@@ -127,8 +149,6 @@ class Server:
         print("-" * 3)
         print("{}, disconnected".format(a))
         print("-" * 3)
-
-
 
     """
     Run the server and create a different thread to handle each client
