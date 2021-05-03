@@ -6,7 +6,7 @@ from random import randint
 from client import *
 from server import *
 
-directpath = os.getcwd() + "\\Test Files"
+
 # hard coded path to test directory 
 #directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
 # using a test file for now 
@@ -19,7 +19,7 @@ newdir = directpath + "/new_file.txt"
 class shittydht:
     dht = {}
 
-    def populateDHT():
+    def populateDHT(directpath):
         dictionary = {}
 
         for filename in os.listdir(directpath):
@@ -53,9 +53,6 @@ def makefile(encrypted_file):
 
 
 def main():
-    # populate initial DHT before deciding if client or server
-    fileList = shittydht.populateDHT()
-
     #targetfile = prepfile()
     #makefile(targetfile)
     #msg = prepfile()

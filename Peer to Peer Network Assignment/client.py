@@ -32,7 +32,7 @@ class Client:
             self.previous_data = None
 
             # output if the server is running
-            print("-" * 3 + "Client Running"+ "-" * 3)
+            print("Client Running")
 
             self.run()
 
@@ -70,7 +70,7 @@ class Client:
 
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
-        x =  P2P.shittydht.populateDHT()
+        x =  P2P.shittydht.populateDHT(os.getcwd() + "\\Client Test Files")
         return x
 
     def run(self):

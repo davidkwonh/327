@@ -41,6 +41,9 @@ class Server:
             # make a list of peers 
             self.peers = []
 
+            # creating starting DHT for server
+            self.dht = self.fileList()
+
             # bind the socket to HOST 127.0.0.1, and PORT 5000
             self.s.bind((HOST, PORT))
 
@@ -63,25 +66,24 @@ class Server:
     2.hash value (if the keys are the same but different hash values)  
     3.most recent timestamp (the more recent file will be the one sent to the other machine)]
     """
-    def comparedht(clientsList):
-        # import all files in the client and server nodes
-        clientdht = clientList
-        serverdht = server.fileList()
-        
+    def comparedht(self, clientdht):
+
         # initiate a temp dictionary to hold file
         tempDict = {}
 
         # start comparing files
-        for filename in serverdht:
+        for filename in self.dht.keys():
             # same name:
             # keys() returns a list of all the available keys in the clientdht
             if filename in clientdht.keys():
                 # pass if the files have the same hash value
-                if serverdht[filename] == clientdht[filename]:
-                    tempDict[filename] = serverdht[filename]
+                if self.dht[filename] == clientdht[filename]:
+                    tempDict[filename] = self.dht[filename]
+
                 # compare timestamps:
-                elif serverdht[filename][1] > clientdht[filename][1]:
-                    tempDict[filename] = serverdht[filename]
+                elif self.dht[filename][1] > clientdht[filename][1]:
+                    tempDict[filename] = self.dht[filename]
+
                 else:
                     tempDict[filename] = clientdht[filename]
                 # remove the file from the client dht
@@ -89,7 +91,7 @@ class Server:
             # different name:
             # add the file to the temp dictionary
             else:
-                tempDict[filename] = serverdht[filename]
+                tempDict[filename] = self.dht[filename]
 
         # adding leftover file in client node to the temp dictionary
         for filename in clientdht:
@@ -101,7 +103,8 @@ class Server:
                 
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
-        return shittydht.populateDHT()
+        x =  P2P.shittydht.populateDHT(os.getcwd() + "\\Server Test Files")
+        return x
 
     """
     Sending info to the clients and closing the connection if the client has left.
@@ -116,7 +119,7 @@ class Server:
                 clientList = pickle.loads(connection.recv(BYTE_SIZE))
                
                 # start comparisons
-                comparedht(clientList)
+                self.comparedht(clientList)
                         
         except (KeyboardInterrupt, SystemExit) as e:
             print("INTERRUPT: INSIDE OF HANDLER")
