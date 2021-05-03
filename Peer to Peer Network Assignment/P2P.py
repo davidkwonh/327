@@ -69,7 +69,7 @@ def main():
             for ipaddy in ip.address:
                 print(ipaddy)
                 try:
-                    client = Client(ipaddy, fileList)
+                    client = Client(ipaddy)
                 except KeyboardInterrupt:
                     sys.exit(0)
                 except:
@@ -77,7 +77,7 @@ def main():
 
                 # become the server
                 try:
-                    server = Server(fileList)
+                    server = Server()
                 except KeyboardInterrupt:
                     sys.exit()
                 except:

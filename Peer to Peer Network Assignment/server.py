@@ -176,8 +176,6 @@ class Server:
             print("{}, has connected to the server".format(a))
             print("-" * 3)
 
-            while True: time.sleep(100)
-
         except (KeyboardInterrupt, SystemExit) as e:
             print("INTERRUPT: INSIDE OF RUN")
             sys.exit()

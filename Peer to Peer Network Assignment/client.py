@@ -74,6 +74,21 @@ class Client:
     def run(self):
         print("This will be where interaction with server happens")
 
+        while True: 
+            r_thread = threading.Thread(target=self.receive_message)
+            r_thread.start()
+            r_thread.join()
+
+            if not data:
+                print("Connection to server lost.")
+                break
+
+            elif data[0:1] == b'\x11':
+                print("Got some new peers")
+                self.update_peers(peers[1:])
+
+        send_message()
+
     def send_message(self):
         #TODO Finish up function
         try:
