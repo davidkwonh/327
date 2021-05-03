@@ -62,7 +62,7 @@ class Server:
             sys.exit()
 
     """
-    code that compares the client dht to that of the server based off three things by the following priority
+    Code that compares the client dht to that of the server based off three things by the following priority
     1.filename = key
     2.hash value (if the keys are the same but different hash values)  
     3.most recent timestamp (the more recent file will be the one sent to the other machine)]
@@ -88,16 +88,22 @@ class Server:
                     if self.dht[filename][1] > clientdht[filename][1]:
                         # Server has most up to date
                         # Send file to client
-                        self.s.send("r".encode('utf-8'))
+                        self.connections[0].send("r".encode('utf-8'))
                         time.sleep(1)
-                        self.s.send(filename.encode('utf-8'))
-                        self.s.send(self.dht[filename])
+                        self.connections[0].send(filename.encode('utf-8'))
+                        msg = self.dht[filename][0]
+                        self.connections[0].send(msg)
 
                     else: 
                         # Client has most up to date
                         # Request file from client
-                        self.s.send("s".encode('utf-8'))
+                        self.connections.send("s".encode('utf-8'))
                         time.sleep(1)
+                        self.connections[0].send(filename.encode('utf-8'))
+
+                        fileContent = self.connections[0].recv(BYTE_SIZE)
+
+                        P2P.makefile(fileContent)
 
             else: 
                 # File not in server directory
@@ -116,9 +122,13 @@ class Server:
             if filename not in clientdht.keys():
                 # Client needs file from server
                 # server sends file to client
-                self.s.send("r".encode('utf-8'))
+                self.connections[0].send("r".encode('utf-8'))
                 time.sleep(1)
-                self.s.send(filename)
+                self.connections[0].send(filename.encode('utf-8'))
+                msg = self.dht[filename][0]
+                self.connections[0].send(msg)
+
+
         
         self.s.send('q'.encode('utf-8'))
         self.fileList() # updating server dht
