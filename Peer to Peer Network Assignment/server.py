@@ -97,7 +97,7 @@ class Server:
                     else: 
                         # Client has most up to date
                         # Request file from client
-                        self.connections.send("s".encode('utf-8'))
+                        self.connections[0].send("s".encode('utf-8'))
                         time.sleep(1)
                         self.connections[0].send(filename.encode('utf-8'))
 
@@ -130,7 +130,7 @@ class Server:
 
 
         
-        self.s.send('q'.encode('utf-8'))
+        self.connections[0].send('q'.encode('utf-8'))
         self.fileList() # updating server dht
 
                 

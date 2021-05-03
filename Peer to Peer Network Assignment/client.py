@@ -103,13 +103,13 @@ class Client:
             elif code == "r":
                 fileName = self.s.recv(BYTE_SIZE).decode('utf-8')
                 # will receive file
-                fileContent = self.s.recv(BYTE_SIZE).decode('utf-8')
+                fileContent = self.s.recv(BYTE_SIZE)
 
                 # create a new file in case 
                 if self.previous_data != fileContent: 
                     # Test to see if this works properly
                     P2P.makefile(fileName, fileContent, "Client Test Files")
-                    self.previous_data = data
+                    self.previous_data = fileContent
 
             elif code == "q":
                 # no more data, we can leave
