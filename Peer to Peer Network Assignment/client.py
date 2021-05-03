@@ -78,13 +78,40 @@ class Client:
         return x
 
     def run(self):
-        while True: 
-            r_thread = threading.Thread(target=self.initialConnection())
-            r_thread.start()
-            r_thread.join()
+        self.initialConnection()
+        try:
+            i_thread = threading.Thread(target=self.waitForCompare)
+            i_thread.start()
+            i_thread.join()
 
-            time.sleep(30)
+            time.sleep(1)
+        
+        except:
+            print("Failed compare")
 
+    def waitForCompare(self):
+        while True:
+            time.sleep(2)
+            code = self.s.recv(1024).decode('utf-8')
+
+            if code == "s":
+                # need to send file over
+                fileName = self.s.recv(1024).decode('utf-8')
+                msg = self.dht[fileName][0]
+                self.s.send(msg)
+
+            elif code == "r":
+                fileName = self.s.recv(1024).decode('utf-8')
+                # will receive file
+                fileContent = self.s.recv(1024)
+                self.receive_message()
+
+            elif code == "q":
+                # no more data, we can leave
+                break
+        
+        self.dht()
+            
     
     def initialConnection(self):
         # Send over DHT 

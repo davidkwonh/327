@@ -63,7 +63,9 @@ def main():
         try:
             print("Establishing Connection")
             # sleep a random time between 1 - 10 seconds
-            time.sleep(randint(1, 10))
+            #time.sleep(randint(1, 10))
+            time.sleep(1)
+            
             for ipaddy in ip.address:
                 try:
                     client = Client(ipaddy)

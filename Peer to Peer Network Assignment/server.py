@@ -70,7 +70,7 @@ class Server:
     def comparedht(self, clientdht):
 
         # initiate a temp dictionary to hold file
-        tempDict = {}
+        #tempDict = {}
 
          # start comparing files
         for filename in clientdht.keys():
@@ -78,60 +78,50 @@ class Server:
             # keys() returns a list of all the available keys in the clientdht
             if filename in self.dht.keys():
                 # pass if the files have the same hash value
-                if self.dht[filename] == clientdht[filename]:
+                if self.dht[filename][0] == clientdht[filename][0]:
                     # No changes were made
                     # move on to the next file
                     continue
+
                 else:
                     # Need to compare time stamps
                     if self.dht[filename][1] > clientdht[filename][1]:
                         # Server has most up to date
                         # Send file to client
-                    else:
+                        self.s.send("r".encode('utf-8'))
+                        time.sleep(1)
+                        self.s.send(filename.encode('utf-8'))
+                        self.s.send(self.dht[filename])
+
+                    else: 
                         # Client has most up to date
                         # Request file from client
-            else:
-                socket.send
+                        self.s.send("s".encode('utf-8'))
+                        time.sleep(1)
+
+            else: 
                 # File not in server directory
                 # Client sends file over
+                self.connections[0].send("s".encode('utf-8'))
+                time.sleep(1)
+                self.connections[0].send(filename.encode('utf-8'))
+
+                fileContent = self.connections[0].recv(BYTE_SIZE)
+
+                # write data to directory
+                P2P.makefile(fileContent)
 
         # adding leftover file in client node to the temp dictionary
         for filename in self.dht:
             if filename not in clientdht.keys():
                 # Client needs file from server
                 # server sends file to client
-
-  
-"""
-        # start comparing files
-        for filename in clientdht.keys():
-            # same name:
-            # keys() returns a list of all the available keys in the clientdht
-            if filename in self.dht.keys():
-                # pass if the files have the same hash value
-                if self.dht[filename] == clientdht[filename]:
-                    tempDict[filename] = self.dht[filename]
-
-                # compare timestamps:
-                elif self.dht[filename][1] > clientdht[filename][1]:
-                    tempDict[filename] = self.dht[filename]
-
-                else:
-                    tempDict[filename] = clientdht[filename]
-                # remove the file from the client dht
-                clientdht.pop(filename)
-            # different name:
-            # add the file to the temp dictionary
-            else:
-                tempDict[filename] = self.dht[filename]
-
-        # adding leftover file in client node to the temp dictionary
-        for filename in clientdht:
-            tempDict[filename] = clientdht[filename]
-
-        #return the dht:
-        return tempDict
-        """
+                self.s.send("r".encode('utf-8'))
+                time.sleep(1)
+                self.s.send(filename)
+        
+        self.s.send('q'.encode('utf-8'))
+        self.fileList() # updating server dht
 
                 
     # a function to return a dht filelist so that we can compare to the server dht
@@ -174,9 +164,8 @@ class Server:
         # send a list of peers to all the peers that are connected to the server
         self.sendPeersList()
         # output which peer got disconnected
-        print("-" * 3)
         print("{}, disconnected".format(a))
-        print("-" * 3)
+
 
     """
     Run the server and create a different thread to handle each client
@@ -190,19 +179,21 @@ class Server:
             # append the address to the list of peers
             self.peers.append(a)
             # output the list of peers
-            print("Peers are: {}".format(self.peers) )
+            #print("Peers are: {}".format(self.peers) )
             # send a list of peers to all the peers that are connected to the server
             #self.sendPeersList()
-            # create a thread for a connection
-            connThread = threading.Thread(target=self.handler, args=(connection, a))
-            connThread.daemon = True
-            connThread.start()
+
             # append connection to the list of connections
             self.connections.append(connection)
             # output the address of the new connection
-            print("-" * 3)
             print("{}, has connected to the server".format(a))
-            print("-" * 3)
+
+            # create a thread for a connection
+            connThread = threading.Thread(target=self.handler, args=(connection, a))
+            #connThread.daemon = True
+            connThread.start()
+            connThread.join()
+            
 
         except (KeyboardInterrupt, SystemExit) as e:
             print("INTERRUPT: INSIDE OF RUN")
@@ -220,67 +211,3 @@ class Server:
             # add a byte '\x11' at the begning of the our byte to can differentiate if we recieved a message for a list of peers
             data = PEER_BYTE_DIFFERENTIATOR + bytes(peerList, 'utf-8')
             connection.send(data)
-
-
-    def initialConnection(self):
-        # Send over DHT
-        dict_DHT = pickle.dumps(self.fileList())
-
-        self.s.sendall(dict_DHT)
-
-
-    def send_message(self, msg):
-        # TODO Finish up function
-        try:
-            print("Sending...")
-            # encode message with UTF-8 codec and send
-            # self.s.send(REQUEST_STRING.encode('utf-8'))
-            self.s.send(msg.encode('utf-8'))
-
-        except KeyboardInterrupt as e:
-            self.send_disconnect_signal()
-            return
-
-
-    def receive_message(self):
-        # TODO NEED TO TEST
-        print("Receiving...")
-        data = self.s.recv(BYTE_SIZE)
-
-        # test to see if we have data
-        print(data.decode("utf-8"))
-        print("\nRecieved message on the client side is:")
-
-        # create a new file in case
-        if self.previous_data != data:
-            # TODO
-            # Test to see if this works properly
-            P2P.makefile(data)
-            self.previous_data = data
-
-        return data
-
-
-    def update_peers(self, peers):
-        # -1 to remove the last value (None)
-        p2p.peers = str(peers, "utf-8").split(',')[:-1]
-
-
-    def create_file(data):
-        # decode(encoding)
-        # decoding the string with UTF-8 codec
-        data = data.decode("utf-8")
-        print("Writing to file")
-
-        # opening new file and writing data
-        with open(new_file_path, 'w') as file:
-            file.write(data)
-
-        return True
-
-
-    def send_disconnect_signal(self):
-        # Print message and send a signal to the server
-        print("Disconnected from server")
-        self.s.send("q".encode('utf-8'))
-        sys.exit()
