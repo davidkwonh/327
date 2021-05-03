@@ -6,14 +6,8 @@ from random import randint
 from client import *
 from server import *
 
-directpath = "dfsdf"
-# hard coded path to test directory 
-#directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
-# using a test file for now 
-prevdir = directpath + "/read_file.txt"
-# new file to write to
-newdir = directpath + "/new_file.txt"
-
+#Get the current working directory
+directpath = os.getcwd()
 
 #hashmap for transactions between servers and clients
 class shittydht:
@@ -31,11 +25,11 @@ class shittydht:
                 dictionary[filename] = (read_data.encode("utf-8"),os.path.getmtime(dir))
         return dictionary
 
-
 class ip:
     # make ourself the default peer
     address = [socket.gethostbyname(socket.gethostname())]
 
+"""
 #sending the file in as an encrypted utf-8 hash
 #before sending the hash, the dht is populated with a key of the file name and the value of the encrypted hash
 def prepfile(dir=prevdir):
@@ -44,10 +38,12 @@ def prepfile(dir=prevdir):
         read_data = file.read()
         shittydht.dht[file].append(read_data.encode("utf-8"))
     return read_data.encode("utf-8")
+"""
 
 #this receives the encrypted file, decrypts it, then saves it to specified local directory that is hard coded as a variable
-def makefile(encrypted_file):
+def makefile(filename, encrypted_file, folder):
     encrypted_file = encrypted_file.decode("utf-8")
+    newdir = directpath + "\\" + folder + "/" + filename
     print("Writing to file")
     with open(newdir, 'w') as file:
         file.write(encrypted_file)

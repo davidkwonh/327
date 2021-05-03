@@ -103,7 +103,7 @@ class Server:
 
                         fileContent = self.connections[0].recv(BYTE_SIZE)
 
-                        P2P.makefile(fileContent)
+                        P2P.makefile(filename, fileContent, "Server Test Files")
 
             else: 
                 # File not in server directory
@@ -115,7 +115,7 @@ class Server:
                 fileContent = self.connections[0].recv(BYTE_SIZE)
 
                 # write data to directory
-                P2P.makefile(fileContent)
+                P2P.makefile(filename, fileContent, "Server Test Files")
 
         # adding leftover file in client node to the temp dictionary
         for filename in self.dht:

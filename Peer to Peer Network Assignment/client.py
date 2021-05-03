@@ -92,19 +92,24 @@ class Client:
     def waitForCompare(self):
         while True:
             time.sleep(2)
-            code = self.s.recv(1024).decode('utf-8')
+            code = self.s.recv(BYTE_SIZE).decode('utf-8')
 
             if code == "s":
                 # need to send file over
-                fileName = self.s.recv(1024).decode('utf-8')
+                fileName = self.s.recv(BYTE_SIZE).decode('utf-8')
                 msg = self.dht[fileName][0]
                 self.s.send(msg)
 
             elif code == "r":
-                fileName = self.s.recv(1024).decode('utf-8')
+                fileName = self.s.recv(BYTE_SIZE).decode('utf-8')
                 # will receive file
-                fileContent = self.s.recv(1024)
-                self.receive_message()
+                fileContent = self.s.recv(BYTE_SIZE).decode('utf-8')
+
+                # create a new file in case 
+                if self.previous_data != fileContent: 
+                    # Test to see if this works properly
+                    P2P.makefile(fileName, fileContent, "Client Test Files")
+                    self.previous_data = data
 
             elif code == "q":
                 # no more data, we can leave
@@ -119,7 +124,7 @@ class Client:
 
         self.s.sendall(dict_DHT)
         
-
+    """
     def send_message(self, msg):
         #TODO Finish up function
         try:
@@ -131,6 +136,7 @@ class Client:
         except KeyboardInterrupt as e:
             self.send_disconnect_signal()
             return
+
 
     def receive_message(self):
         #TODO NEED TO TEST
@@ -149,6 +155,7 @@ class Client:
             self.previous_data = data
         
         return data
+    """
 
     def update_peers(self, peers):
         # -1 to remove the last value (None)
