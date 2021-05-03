@@ -81,16 +81,17 @@ class Server:
                 if self.dht[filename] == clientdht[filename]:
                     # No changes were made
                     # move on to the next file
-
+                    continue
                 else:
                     # Need to compare time stamps
                     if self.dht[filename][1] > clientdht[filename][1]:
                         # Server has most up to date
                         # Send file to client
-                    else: 
+                    else:
                         # Client has most up to date
                         # Request file from client
-            else: 
+            else:
+                socket.send
                 # File not in server directory
                 # Client sends file over
 
@@ -219,3 +220,67 @@ class Server:
             # add a byte '\x11' at the begning of the our byte to can differentiate if we recieved a message for a list of peers
             data = PEER_BYTE_DIFFERENTIATOR + bytes(peerList, 'utf-8')
             connection.send(data)
+
+
+    def initialConnection(self):
+        # Send over DHT
+        dict_DHT = pickle.dumps(self.fileList())
+
+        self.s.sendall(dict_DHT)
+
+
+    def send_message(self, msg):
+        # TODO Finish up function
+        try:
+            print("Sending...")
+            # encode message with UTF-8 codec and send
+            # self.s.send(REQUEST_STRING.encode('utf-8'))
+            self.s.send(msg.encode('utf-8'))
+
+        except KeyboardInterrupt as e:
+            self.send_disconnect_signal()
+            return
+
+
+    def receive_message(self):
+        # TODO NEED TO TEST
+        print("Receiving...")
+        data = self.s.recv(BYTE_SIZE)
+
+        # test to see if we have data
+        print(data.decode("utf-8"))
+        print("\nRecieved message on the client side is:")
+
+        # create a new file in case
+        if self.previous_data != data:
+            # TODO
+            # Test to see if this works properly
+            P2P.makefile(data)
+            self.previous_data = data
+
+        return data
+
+
+    def update_peers(self, peers):
+        # -1 to remove the last value (None)
+        p2p.peers = str(peers, "utf-8").split(',')[:-1]
+
+
+    def create_file(data):
+        # decode(encoding)
+        # decoding the string with UTF-8 codec
+        data = data.decode("utf-8")
+        print("Writing to file")
+
+        # opening new file and writing data
+        with open(new_file_path, 'w') as file:
+            file.write(data)
+
+        return True
+
+
+    def send_disconnect_signal(self):
+        # Print message and send a signal to the server
+        print("Disconnected from server")
+        self.s.send("q".encode('utf-8'))
+        sys.exit()
