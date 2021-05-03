@@ -9,6 +9,7 @@ import time
 import client
 import P2P
 import pickle
+import os
 
 BYTE_SIZE = 1024
 HEADERSIZE = 10
@@ -71,11 +72,41 @@ class Server:
         # initiate a temp dictionary to hold file
         tempDict = {}
 
-        # start comparing files
-        for filename in self.dht.keys():
+         # start comparing files
+        for filename in clientdht.keys():
             # same name:
             # keys() returns a list of all the available keys in the clientdht
-            if filename in clientdht.keys():
+            if filename in self.dht.keys():
+                # pass if the files have the same hash value
+                if self.dht[filename] == clientdht[filename]:
+                    # No changes were made
+                    # move on to the next file
+
+                else:
+                    # Need to compare time stamps
+                    if self.dht[filename][1] > clientdht[filename][1]:
+                        # Server has most up to date
+                        # Send file to client
+                    else: 
+                        # Client has most up to date
+                        # Request file from client
+            else: 
+                # File not in server directory
+                # Client sends file over
+
+        # adding leftover file in client node to the temp dictionary
+        for filename in self.dht:
+            if filename not in clientdht.keys():
+                # Client needs file from server
+                # server sends file to client
+
+  
+"""
+        # start comparing files
+        for filename in clientdht.keys():
+            # same name:
+            # keys() returns a list of all the available keys in the clientdht
+            if filename in self.dht.keys():
                 # pass if the files have the same hash value
                 if self.dht[filename] == clientdht[filename]:
                     tempDict[filename] = self.dht[filename]
@@ -99,11 +130,13 @@ class Server:
 
         #return the dht:
         return tempDict
+        """
 
                 
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
-        x =  P2P.shittydht.populateDHT(os.getcwd() + "\\Server Test Files")
+        path = os.getcwd() + "\\Server Test Files"
+        x =  P2P.shittydht.populateDHT(path)
         return x
 
     """

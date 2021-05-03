@@ -6,7 +6,7 @@ from random import randint
 from client import *
 from server import *
 
-
+directpath = "dfsdf"
 # hard coded path to test directory 
 #directpath = "C:\\Users\\castr\\OneDrive - CSULB\\CECS 327\\Term Project\\Peer to Peer Network Assignment\\Test Files"
 # using a test file for now 
@@ -19,11 +19,13 @@ newdir = directpath + "/new_file.txt"
 class shittydht:
     dht = {}
 
-    def populateDHT(directpath):
+    def populateDHT(path):
         dictionary = {}
+        #print("File Directory Path: ")
+        #directpath = input()
 
-        for filename in os.listdir(directpath):
-            dir = directpath + '/' + filename
+        for filename in os.listdir(path):
+            dir = path + '/' + filename
             with open(dir, 'r') as file:
                 read_data = file.read()
                 dictionary[filename] = (read_data.encode("utf-8"),os.path.getmtime(dir))
@@ -61,10 +63,8 @@ def main():
         try:
             print("Establishing Connection")
             # sleep a random time between 1 - 10 seconds
-            #time.sleep(randint(1, 10))
-            time.sleep(1)
+            time.sleep(randint(1, 10))
             for ipaddy in ip.address:
-                print(ipaddy)
                 try:
                     client = Client(ipaddy)
                 except KeyboardInterrupt:

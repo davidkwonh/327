@@ -4,6 +4,7 @@ import sys
 import time
 import P2P
 import pickle # to send dictionary over 
+import os
 
 BYTE_SIZE = 1024
 HEADERSIZE = 10
@@ -25,6 +26,8 @@ class Client:
             # optname: SO_REUSEADDR meaning to reuse socket address in case of client closing 
             # value: integer representing buffer 
             self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+            self.dht = self.fileList()
 
             # Connect to remote socket (addr) using specified port number
             self.s.connect((addr, PORT))
@@ -70,7 +73,8 @@ class Client:
 
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
-        x =  P2P.shittydht.populateDHT(os.getcwd() + "\\Client Test Files")
+        path = os.getcwd() + "\\Client Test Files"
+        x =  P2P.shittydht.populateDHT(path)
         return x
 
     def run(self):
@@ -79,13 +83,7 @@ class Client:
             r_thread.start()
             r_thread.join()
 
-            if not data:
-                print("Connection to server lost.")
-                break
-
-            elif data[0:1] == b'\x11':
-                print("Got some new peers")
-                self.update_peers(peers[1:])
+            time.sleep(30)
 
     
     def initialConnection(self):
