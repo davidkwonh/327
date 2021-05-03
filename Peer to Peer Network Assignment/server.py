@@ -8,9 +8,11 @@ import sys
 import time
 import client
 import P2P
+import pickle
 
 BYTE_SIZE = 1024
-HOST = '127.0.0.1'
+HEADERSIZE = 10
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 5000
 PEER_BYTE_DIFFERENTIATOR = b'\x11' 
 REQUEST_STRING = "req"
@@ -61,9 +63,9 @@ class Server:
     2.hash value (if the keys are the same but different hash values)  
     3.most recent timestamp (the more recent file will be the one sent to the other machine)]
     """
-    def comparedht():
+    def comparedht(clientsList):
         # import all files in the client and server nodes
-        clientdht = client.fileList()
+        clientdht = clientList
         serverdht = server.fileList()
         
         # initiate a temp dictionary to hold file
@@ -111,21 +113,10 @@ class Server:
             while True:
                 # server recieves the message
                 # socket.recv will read at most BYTE_SIZE bytes, blocking if no data is waiting to be read
-                data = connection.recv(BYTE_SIZE)
-                
-                for connection in self.connections:
-    
-                    # If the connected peer wants to disconnect:
-                    if data and data.decode('utf-8')[0].lower() == 'q':
-                        # disconnect the peer 
-                        self.disconnect(connection, a)
-                        return
-
-                    # if the connection is still active:
-                    elif data and data.decode('utf-8') == REQUEST_STRING:
-                        print("-" * 3 + " UPLOADING " + "-" * 3)
-                        # uploading of the file
-                        connection.send(self.file)
+                clientList = pickle.loads(connection.recv(BYTE_SIZE))
+               
+                # start comparisons
+                comparedht(clientList)
                         
         except (KeyboardInterrupt, SystemExit) as e:
             print("INTERRUPT: INSIDE OF HANDLER")
@@ -164,7 +155,7 @@ class Server:
             # output the list of peers
             print("Peers are: {}".format(self.peers) )
             # send a list of peers to all the peers that are connected to the server
-            self.sendPeersList()
+            #self.sendPeersList()
             # create a thread for a connection
             connThread = threading.Thread(target=self.handler, args=(connection, a))
             connThread.daemon = True

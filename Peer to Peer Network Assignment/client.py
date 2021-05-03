@@ -3,9 +3,11 @@ import threading
 import sys
 import time
 import P2P
+import pickle # to send dictionary over 
 
 BYTE_SIZE = 1024
-HOST = '127.0.0.1'
+HEADERSIZE = 10
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 5000
 PEER_BYTE_DIFFERENTIATOR = b'\x11' 
 REQUEST_STRING = "req"
@@ -28,7 +30,6 @@ class Client:
             self.s.connect((addr, PORT))
 
             self.previous_data = None
-
 
             # output if the server is running
             print("-" * 3 + "Client Running"+ "-" * 3)
@@ -69,13 +70,12 @@ class Client:
 
     # a function to return a dht filelist so that we can compare to the server dht
     def fileList(self):
-        return shittydht.populateDHT()
+        x =  P2P.shittydht.populateDHT()
+        return x
 
     def run(self):
-        print("This will be where interaction with server happens")
-
         while True: 
-            r_thread = threading.Thread(target=self.receive_message)
+            r_thread = threading.Thread(target=self.initialConnection())
             r_thread.start()
             r_thread.join()
 
@@ -87,15 +87,21 @@ class Client:
                 print("Got some new peers")
                 self.update_peers(peers[1:])
 
-        send_message()
+    
+    def initialConnection(self):
+        # Send over DHT 
+        dict_DHT = pickle.dumps(self.fileList())
 
-    def send_message(self):
+        self.s.sendall(dict_DHT)
+        
+
+    def send_message(self, msg):
         #TODO Finish up function
         try:
             print("Sending...")
             # encode message with UTF-8 codec and send 
-            self.s.send(REQUEST_STRING.encode('utf-8'))
-            self.s.send(fileList)
+            #self.s.send(REQUEST_STRING.encode('utf-8'))
+            self.s.send(msg.encode('utf-8'))
 
         except KeyboardInterrupt as e:
             self.send_disconnect_signal()

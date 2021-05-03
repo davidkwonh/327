@@ -32,7 +32,7 @@ class shittydht:
 
 class ip:
     # make ourself the default peer
-    address = ['127.0.0.1']
+    address = [socket.gethostbyname(socket.gethostname())]
 
 #sending the file in as an encrypted utf-8 hash
 #before sending the hash, the dht is populated with a key of the file name and the value of the encrypted hash
