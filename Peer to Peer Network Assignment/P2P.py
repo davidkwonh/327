@@ -12,6 +12,9 @@ directpath = os.getcwd()
 #hashmap for transactions between servers and clients
 class shittydht:
     dht = {}
+    def populate(self):
+        for filename in os.listdir(directpath):
+            dht[filename],append()
 
     def populateDHT(path):
         dictionary = {}
@@ -49,6 +52,15 @@ def makefile(filename, encrypted_file, folder):
         file.write(encrypted_file)
     return True
 
+<<<<<<< Updated upstream
+=======
+
+def compare():
+    with open(dir, 'r') as file:
+        read_data = file.read()
+
+
+>>>>>>> Stashed changes
 
 def main():
     #targetfile = prepfile()

@@ -5,6 +5,7 @@ SERVER SIDE: deals with uploading files for other peers
 import socket 
 import threading 
 import sys
+from P2P import *
 import time
 import client
 import P2P
@@ -22,6 +23,16 @@ class Server:
     """
     constructor for server
     """
+<<<<<<< Updated upstream
+=======
+
+
+
+    def __init__(self, file):
+        try:
+            # the file to upload
+            self.file = file
+>>>>>>> Stashed changes
 
     def __init__(self):
         try:
